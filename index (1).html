@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lithium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --glass:rgba(255,255,255,0.06);
+  --glass-h:rgba(255,255,255,0.10);
+  --gb:rgba(255,255,255,0.10);
+  --gbh:rgba(255,255,255,0.22);
+  --text:rgba(255,255,255,0.92);
+  --text2:rgba(255,255,255,0.45);
+  --text3:rgba(255,255,255,0.22);
+  --r:24px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:#07071a;color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* BG */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:0;}
+.o1{width:70vw;height:70vw;background:radial-gradient(circle,#2563eb,#1d3fa8 50%,transparent);top:-25%;left:-20%;animation:oi 1.6s .1s ease forwards,d1 20s 1.8s ease-in-out infinite alternate;}
+.o2{width:60vw;height:60vw;background:radial-gradient(circle,#9333ea,#6d22b8 55%,transparent);top:-5%;right:-15%;animation:oi 1.6s .3s ease forwards,d2 24s 2s ease-in-out infinite alternate;}
+.o3{width:45vw;height:45vw;background:radial-gradient(circle,#c026d3,#86198f 60%,transparent);bottom:10%;left:5%;animation:oi 1.6s .5s ease forwards,d3 18s 2.2s ease-in-out infinite alternate;}
+.o4{width:35vw;height:35vw;background:radial-gradient(circle,#0ea5e9,#0369a1 60%,transparent);bottom:5%;right:10%;animation:oi 1.6s .4s ease forwards,d4 22s 2s ease-in-out infinite alternate;}
+@keyframes oi{to{opacity:1}}
+@keyframes d1{to{transform:translate(5vw,8vh) scale(1.1)}}
+@keyframes d2{to{transform:translate(-6vw,10vh) scale(1.08)}}
+@keyframes d3{to{transform:translate(8vw,-6vh) scale(1.12)}}
+@keyframes d4{to{transform:translate(-5vw,-8vh) scale(1.06)}}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:160px;}
+
+/* LAYOUT */
+.page{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:64px 24px 80px;}
+
+/* HERO */
+.hero{margin-bottom:52px;opacity:0;transform:translateY(28px);animation:up .9s .5s cubic-bezier(.22,.68,0,1.2) forwards;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:var(--glass);border:1px solid var(--gb);backdrop-filter:blur(12px);border-radius:999px;padding:5px 14px;font-size:.68rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text2);margin-bottom:22px;}
+.hero-tag-dot{width:6px;height:6px;border-radius:50%;background:#818cf8;box-shadow:0 0 8px #818cf8;animation:blink 2.4s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-name{font-family:'Sora',sans-serif;font-size:clamp(3.5rem,10vw,7rem);font-weight:800;letter-spacing:-.04em;line-height:.95;background:linear-gradient(135deg,#fff 0%,rgba(200,180,255,.7) 60%,rgba(130,140,255,.5) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px;}
+.hero-bio{font-size:clamp(.9rem,2vw,1.05rem);font-weight:300;color:var(--text2);max-width:420px;line-height:1.65;}
+.hero-bio em{font-style:normal;color:rgba(255,255,255,.75);}
+
+/* SECTION LABEL */
+.slabel{font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;padding-left:2px;}
+.section{margin-bottom:36px;}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+
+/* CARD */
+.card{background:var(--glass);border:1px solid var(--gb);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);border-radius:var(--r);padding:24px;transition:background .25s,border-color .25s,transform .25s;position:relative;overflow:hidden;text-decoration:none;color:inherit;display:block;opacity:0;transform:translateY(20px);}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 60%);pointer-events:none;}
+.card:hover{background:var(--glass-h);border-color:var(--gbh);transform:translateY(-3px) scale(1.015);}
+.card.vis{animation:up .7s cubic-bezier(.22,.68,0,1.2) forwards;}
+
+/* FEATURED CARD */
+.card-ft{grid-column:1/-1;display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;padding:32px;}
+.card-ft .glow{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(99,102,241,.15) 0%,transparent 70%);pointer-events:none;}
+.cicon{font-size:2rem;margin-bottom:12px;display:block;}
+.ctitle{font-family:'Sora',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:6px;letter-spacing:-.02em;}
+.card-ft .ctitle{font-size:1.55rem;}
+.cdesc{font-size:.8rem;color:var(--text2);line-height:1.55;}
+.card-ft .cdesc{font-size:.87rem;max-width:380px;}
+.tag-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px;}
+.tag{font-size:.63rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:var(--text2);}
+.arrow{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,transform .2s;}
+.card:hover .arrow{background:rgba(255,255,255,.16);transform:translate(2px,-2px);}
+.arrow svg{width:18px;height:18px;stroke:rgba(255,255,255,.7);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* PROJECT CARD */
+.card-proj{min-height:150px;display:flex;flex-direction:column;justify-content:space-between;}
+.pstatus{display:inline-flex;align-items:center;gap:5px;font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
+.sdot{width:5px;height:5px;border-radius:50%;}
+
+/* SOCIAL CARD */
+.card-soc{display:flex;flex-direction:column;align-items:flex-start;padding:20px;}
+.sicon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:1.1rem;}
+.sname{font-family:'Sora',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:-.01em;}
+.shandle{font-size:.7rem;color:var(--text3);margin-top:3px;}
+
+/* ABOUT CARD */
+.card-about{grid-column:1/-1;display:flex;align-items:center;gap:28px;padding:28px 32px;}
+.avatar{width:64px;height:64px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#c026d3);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;letter-spacing:-.03em;}
+.atext .atitle{font-family:'Sora',sans-serif;font-size:1rem;font-weight:700;margin-bottom:6px;letter-spacing:-.01em;}
+.atext .abody{font-size:.82rem;color:var(--text2);line-height:1.6;}
+
+/* FOOTER */
+.footer{text-align:center;font-size:.63rem;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-top:60px;opacity:0;animation:up .6s 2.2s ease forwards;}
+
+@keyframes up{to{opacity:1;transform:translateY(0)}}
+
+/* MOBILE */
+@media(max-width:640px){
+  .page{padding:48px 16px 64px;}
+  .g2{grid-template-columns:1fr;}
+  .g4{grid-template-columns:1fr 1fr;}
+  .card-ft{grid-template-columns:1fr;}
+  .card-ft .arrow{display:none;}
+  .card-about{flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+  <div class="orb o4"></div>
+</div>
+<div class="grain"></div>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag"><div class="hero-tag-dot"></div>Lithium's Space</div>
+    <div class="hero-name">Lithium</div>
+    <p class="hero-bio">A personal hub for <em>tools, projects</em> and everything else.<br>Built for revision, designed for life.</p>
+  </div>
+
+  <!-- FEATURED -->
+  <div class="section">
+    <div class="slabel">Featured</div>
+    <div class="g2">
+      <a class="card card-ft" href="GradeTracker_fixed.html" data-delay="0">
+        <div class="glow"></div>
+        <div>
+          <span class="cicon">📊</span>
+          <div class="ctitle">Grade Tracker</div>
+          <div class="cdesc">Chug your yellow crappy sheets in the bin and use this to track every topic, every score. Colour-coded performance, Sparx code logging, **CSV &amp; Excel import/export**, dark mode, and more.</div>
+          <div class="tag-row">
+            <span class="tag">Revision</span>
+            <span class="tag">GCSE</span>
+            <span class="tag">Sparx</span>
+            <span class="tag">Excel</span>
+          </div>
+        </div>
+        <div class="arrow">
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="section">
+    <div class="slabel">Projects</div>
+    <div class="g2">
+
+      <a class="card card-proj" href="GradeTracker_fixed.html" data-delay="0">
+        <div>
+          <div class="pstatus"><div class="sdot" style="background:#10b981;box-shadow:0 0 5px #10b981"></div>Live</div>
+          <span class="cicon">📊</span>
+          <div class="ctitle">Grade Tracker</div>
+          <div class="cdesc">Personal grade &amp; revision tool.</div>
+        </div>
+        <div class="tag-row"><span class="tag">HTML</span><span class="tag">JS</span></div>
+      </a>
+
+      <div class="card card-proj" data-delay="80">
+        <div>
+          <div class="pstatus"><div class="sdot" style="background:#f59e0b;box-shadow:0 0 5px #f59e0b"></div>Coming soon</div>
+          <span class="cicon">🔧</span>
+          <div class="ctitle">Project 2</div>
+          <div class="cdesc">Something new is being built here.</div>
+        </div>
+        <div class="tag-row"><span class="tag">TBA</span></div>
+      </div>
+
+      <div class="card card-proj" data-delay="160">
+        <div>
+          <div class="pstatus"><div class="sdot" style="background:#f59e0b;box-shadow:0 0 5px #f59e0b"></div>Coming soon</div>
+          <span class="cicon">💡</span>
+          <div class="ctitle">Project 3</div>
+          <div class="cdesc">Watch this space.</div>
+        </div>
+        <div class="tag-row"><span class="tag">TBA</span></div>
+      </div>
+
+      <div class="card" data-delay="240" style="border-style:dashed;border-color:rgba(255,255,255,.07);background:transparent;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--text3);cursor:default;min-height:150px;">
+        <div style="font-size:1.8rem;opacity:.4">+</div>
+        <div style="font-size:.73rem;font-weight:500;letter-spacing:.05em;">More coming</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SOCIALS -->
+  <div class="section">
+    <div class="slabel">Socials</div>
+    <div class="g4">
+
+      <a class="card card-soc" href="#" data-delay="0">
+        <div class="sicon" style="background:linear-gradient(135deg,#f97316,#ec4899,#8b5cf6)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </div>
+        <div class="sname">Instagram</div>
+        <div class="shandle">@yourhandle</div>
+      </a>
+
+      <a class="card card-soc" href="#" data-delay="60">
+        <div class="sicon" style="background:#5865f2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        </div>
+        <div class="sname">Discord</div>
+        <div class="shandle">yourserver</div>
+      </a>
+
+      <a class="card card-soc" href="#" data-delay="120">
+        <div class="sicon" style="background:#ef4444">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#ef4444"/></svg>
+        </div>
+        <div class="sname">YouTube</div>
+        <div class="shandle">@yourchannel</div>
+      </a>
+
+      <a class="card card-soc" href="#" data-delay="180">
+        <div class="sicon" style="background:#24292e">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        </div>
+        <div class="sname">GitHub</div>
+        <div class="shandle">@yourusername</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="section">
+    <div class="slabel">About</div>
+    <div class="g2">
+      <div class="card card-about" data-delay="0" style="cursor:default;">
+        <div class="avatar">Li</div>
+        <div class="atext">
+          <div class="atitle">Hey, I'm Lithium 👋</div>
+          <div class="abody">Student, builder, tinkerer. I use Ai tools to make cool stuff UwU.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Lithium &nbsp;·&nbsp; 2025 &nbsp;·&nbsp; Built from scratch</div>
+
+</div>
+
+<script>
+const cards = document.querySelectorAll('.card');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const d = parseInt(e.target.dataset.delay || 0);
+      setTimeout(() => e.target.classList.add('vis'), d);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+cards.forEach(c => obs.observe(c));
+</script>
+
+</body>
+</html>
