@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Grade Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..900&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" crossorigin="anonymous"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -107,7 +107,8 @@ main{position:relative;z-index:5;flex:1;display:flex;flex-direction:column;heigh
 .search-status{font-size:.71rem;color:var(--text3);margin-left:4px;}
 
 /* TABLE AREA */
-.table-area{flex:1;overflow:auto;padding:14px 20px 48px;}
+.glass-panel-wrap{flex:1;overflow:hidden;margin:0 16px 16px;border-radius:var(--radius);background:var(--glass-bg);backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);border:1px solid var(--glass-border);box-shadow:0 8px 40px rgba(10,40,100,.10);display:flex;flex-direction:column;min-height:0;}
+.table-area{flex:1;overflow:auto;padding:14px 16px 48px;}
 .table-area::-webkit-scrollbar{width:5px;height:5px;}
 .table-area::-webkit-scrollbar-thumb{background:rgba(26,111,212,.18);border-radius:999px;}
 
@@ -255,7 +256,7 @@ body.dark .tc-body input,.tc-body input{background:var(--input-bg)!important;col
      the whole aside scrolls as one unit */
   aside .subject-list{overflow-y:visible;flex:none;}
   aside .sidebar-bottom{flex-shrink:0;}
-  aside .theme-panel{flex-shrink:0;padding-bottom:24px;}
+  aside .theme-panel{flex-shrink:0;padding-bottom:24px;position:relative;}
 
   main{height:auto;overflow:visible;min-height:100vh;}
 
@@ -292,6 +293,7 @@ body.dark .tc-body input,.tc-body input{background:var(--input-bg)!important;col
   /* revision cards tighter */
   .rev-card{flex-wrap:wrap;gap:5px;}
   .rev-topic{width:100%;min-width:0;}
+  .glass-panel-wrap{margin:0 8px 8px;border-radius:12px;}
 }
 
 @media(max-width:420px){
@@ -308,7 +310,14 @@ body.dark .tc-body input,.tc-body input{background:var(--input-bg)!important;col
 .swatch{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.25),inset 0 0 0 1px rgba(0,0,0,.1);}
 .swatch:hover{transform:scale(1.2);}
 .swatch.active{border-color:var(--text);transform:scale(1.2);box-shadow:0 0 0 3px rgba(26,111,212,.3),0 1px 4px rgba(0,0,0,.25);}
-.swatch-custom{width:22px;height:22px;border-radius:50%;border:2px dashed var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--text3);transition:border-color .15s,color .15s;flex-shrink:0;position:relative;overflow:hidden;}
+.swatch-custom{width:22px;height:22px;border-radius:50%;border:2px dashed var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--text3);transition:all .15s;flex-shrink:0;}
+.swatch-custom.active{border-color:transparent;}
+.hue-dropdown{display:none;position:fixed;bottom:80px;left:8px;width:220px;background:var(--modal-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:12px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,.22);border:1px solid var(--glass-border);z-index:9999;}
+.hue-dropdown.open{display:block;}
+.hue-track{width:100%;height:16px;border-radius:8px;cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;background:linear-gradient(to right,hsl(0,65%,65%),hsl(30,65%,65%),hsl(60,65%,65%),hsl(90,65%,65%),hsl(120,65%,65%),hsl(150,65%,65%),hsl(180,65%,65%),hsl(210,65%,65%),hsl(240,65%,65%),hsl(270,65%,65%),hsl(300,65%,65%),hsl(330,65%,65%),hsl(360,65%,65%));}
+.hue-track::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;border:3px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:pointer;}
+.hue-track::-moz-range-thumb{width:20px;height:20px;border-radius:50%;border:3px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:pointer;background:white;}
+.hue-preview{height:28px;border-radius:8px;margin-top:8px;transition:background .1s;}
 .swatch-custom:hover{border-color:var(--accent);color:var(--accent);}
 .swatch-custom input[type=color]{position:absolute;opacity:0;inset:0;cursor:pointer;width:100%;height:100%;}
 .dark-toggle{display:flex;align-items:center;gap:7px;margin-top:8px;padding:6px 8px;border-radius:8px;cursor:pointer;transition:background .12s;user-select:none;}
@@ -364,6 +373,7 @@ body.dark .dark-toggle-thumb{left:16px;}
   <div class="theme-panel">
     <div class="theme-label">Theme</div>
     <div class="theme-swatches" id="themeSwatches"></div>
+
     <div class="dark-toggle" onclick="toggleDark()">
       <div class="dark-toggle-track"><div class="dark-toggle-thumb"></div></div>
       <span class="dark-toggle-lbl">Dark mode</span>
@@ -413,13 +423,13 @@ body.dark .dark-toggle-thumb{left:16px;}
     <span class="search-status" id="searchStatus"></span>
   </div>
 
-  <div class="table-area" id="tableArea">
+  <div class="glass-panel-wrap"><div class="table-area" id="tableArea">
     <div class="empty-state">
       <div class="icon">📊</div>
       <h2>No subjects yet</h2>
       <p>Click <strong>Add Subject</strong> in the sidebar, or import a CSV / Excel file.</p>
     </div>
-  </div>
+  </div></div>
 </main>
 
 <!-- CLEAR ALL -->
@@ -510,6 +520,14 @@ function fmtFile(){const n=new Date();return`${String(n.getDate()).padStart(2,'0
 
 // ── COLOUR ─────────────────────────────────────────────────────────────
 function col(p){
+  const dk=document.body.classList.contains('dark');
+  if(dk){
+    if(p===null)return{row:'rgba(59,91,156,.28)',bar:'#60a5fa',text:'#93c5fd',bd:'rgba(96,165,250,.3)',bg:'rgba(59,91,156,.4)',side:'rgba(59,91,156,.4)',sidetxt:'#93c5fd'};
+    if(p>=.90) return{row:'rgba(6,78,59,.55)',bar:'#10b981',text:'#6ee7b7',bd:'rgba(16,185,129,.3)',bg:'rgba(6,78,59,.7)',side:'rgba(6,78,59,.7)',sidetxt:'#6ee7b7'};
+    if(p>=.75) return{row:'rgba(20,83,45,.45)',bar:'#22c55e',text:'#86efac',bd:'rgba(34,197,94,.3)',bg:'rgba(20,83,45,.6)',side:'rgba(20,83,45,.6)',sidetxt:'#86efac'};
+    if(p>=.50) return{row:'rgba(113,63,18,.45)',bar:'#eab308',text:'#fde047',bd:'rgba(234,179,8,.3)',bg:'rgba(113,63,18,.6)',side:'rgba(113,63,18,.6)',sidetxt:'#fde047'};
+    return{row:'rgba(127,29,29,.50)',bar:'#ef4444',text:'#fca5a5',bd:'rgba(239,68,68,.3)',bg:'rgba(127,29,29,.65)',side:'rgba(127,29,29,.65)',sidetxt:'#fca5a5'};
+  }
   if(p===null)return{row:'#eef4fb',bar:'#93c5fd',text:'#1e40af',bd:'#bfdbfe',bg:'#dbeafe',side:'#dbeafe',sidetxt:'#1e40af'};
   if(p>=.90) return{row:'#d1fae5',bar:'#10b981',text:'#065f46',bd:'#6ee7b7',bg:'#a7f3d0',side:'#a7f3d0',sidetxt:'#065f46'};
   if(p>=.75) return{row:'#dcfce7',bar:'#22c55e',text:'#166534',bd:'#86efac',bg:'#bbf7d0',side:'#bbf7d0',sidetxt:'#166534'};
@@ -1074,6 +1092,7 @@ function exportCSV(){
   dl(new Blob([out],{type:'text/csv'}),fmtFile()+'.csv');toast('Exported → '+fmtFile()+'.csv');
 }
 function exportXLSX(){
+  if(typeof XLSX==='undefined'){toast('⚠️ XLSX library not loaded — check your connection');return;}
   const ids=Object.keys(subjects);if(!ids.length){toast('Nothing to export');return;}
   const wb=XLSX.utils.book_new();
   ids.forEach(id=>{
@@ -1082,13 +1101,19 @@ function exportXLSX(){
     const dateStr=subj.date||nowDS();
     // Column order must match importXLSX parseXlsxRow: Topic, Code, Max, Score, Feedback, SC, ST, PP
     const data=[[`DATE: ${dateStr}`],['Topic','Sparx Code','Max Mark','Your Mark','Feedback','Sparx Correct','Sparx Total','Practice Paper']];
-    rows.forEach(r=>{data.push([r.topic,(r.codes||[]).join('|'),r.max??0,r.score??0,r.feedback??'',r.sc??'',r.st??'',r.pp?'Yes':'No']);});
+    rows.forEach(r=>{data.push([r.topic,(r.codes||[]).join('|'),parseInt(r.max)||0,parseInt(r.score)||0,String(r.feedback??''),String(r.sc??''),String(r.st??''),r.pp?'Yes':'No']);});
     const tM=rows.reduce((s,r)=>s+(parseInt(r.max)||0),0),tS=rows.reduce((s,r)=>s+(parseInt(r.score)||0),0);
     data.push(['Total','',tM,tS,'','','','']);
     const ws=XLSX.utils.aoa_to_sheet(data);ws['!cols']=[{wch:28},{wch:16},{wch:8},{wch:8},{wch:32},{wch:10},{wch:10},{wch:13}];
-    XLSX.utils.book_append_sheet(wb,ws,subj.name.slice(0,31).replace(/[:\\/?*[\]]/g,''));
+    XLSX.utils.book_append_sheet(wb,ws,subj.name.slice(0,31).replace(/[:\\/?*\[\]]/g,'_'));
   });
-  XLSX.writeFile(wb,fmtFile()+'.xlsx');toast('Exported → '+fmtFile()+'.xlsx');
+  try{
+    const fname=fmtFile()+'.xlsx';
+    const wbout=XLSX.write(wb,{bookType:'xlsx',type:'array'});
+    const blob=new Blob([wbout],{type:'application/octet-stream'});
+    dl(blob,fname);
+    toast('✓ Exported → '+fname);
+  }catch(e){const msg=e&&e.message?e.message:String(e);toast('⚠️ Export failed: '+msg);console.error('XLSX export error:',e);alert('Export error: '+msg);}
 }
 function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();}
 
@@ -1282,6 +1307,8 @@ function applyTheme(){
   r.setProperty('--bg-s',themeState.bgS+'%');
   document.body.classList.toggle('dark',!!themeState.dark);
   try{localStorage.setItem(THEME_STORE,JSON.stringify(themeState));}catch(e){}
+  const sl=document.getElementById('hueSlider');if(sl)sl.value=themeState.bgH;
+  const pv=document.getElementById('huePreview');if(pv)pv.style.background=`hsl(${themeState.bgH},65%,65%)`;
   renderSwatches();
 }
 function setBgHue(bgH,bgS,custom=false){
@@ -1292,36 +1319,42 @@ function setBgHue(bgH,bgS,custom=false){
 function toggleDark(){
   themeState.dark=!themeState.dark;
   applyTheme();
+  buildTableRows();buildCards();
 }
+function closeHueDropdown(){document.getElementById('hueDropdown')?.classList.remove('open');}
 function renderSwatches(){
   const el=document.getElementById('themeSwatches');if(!el)return;
   el.innerHTML='';
-  // Preset swatches
   ACCENT_PRESETS.forEach(p=>{
     const s=document.createElement('div');
     const isActive=!themeState.custom&&themeState.bgH===p.bgH&&themeState.bgS===p.bgS;
     s.className='swatch'+(isActive?' active':'');
     s.style.background=p.swatch;
     s.title=p.name;
-    s.onclick=()=>setBgHue(p.bgH,p.bgS,false);
+    s.onclick=()=>{setBgHue(p.bgH,p.bgS,false);closeHueDropdown();};
     el.appendChild(s);
   });
-  // Custom hue swatch — conic gradient wheel, range slider hidden inside
+  // Custom '+' swatch that opens a dropdown hue slider
   const wrap=document.createElement('div');
   wrap.className='swatch-custom'+(themeState.custom!=null?' active':'');
-  wrap.title='Custom hue';
-  wrap.style.cssText='background:conic-gradient(hsl(0,65%,65%),hsl(60,65%,65%),hsl(120,65%,65%),hsl(180,65%,65%),hsl(240,65%,65%),hsl(300,65%,65%),hsl(360,65%,65%));';
+  wrap.title='Custom colour';
   if(themeState.custom!=null){
-    // Show a dot at selected hue
     wrap.style.background=`hsl(${themeState.bgH},65%,65%)`;
+    wrap.style.border='2px solid transparent';
+  } else {
+    wrap.textContent='+';
   }
-  const inp=document.createElement('input');
-  inp.type='range';inp.min=0;inp.max=359;inp.value=themeState.bgH;
-  inp.style.cssText='position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;margin:0;padding:0;';
-  inp.oninput=e=>setBgHue(parseInt(e.target.value),65,true);
-  wrap.appendChild(inp);
+  wrap.onclick=(e)=>{
+    e.stopPropagation();
+    const dd=document.getElementById('hueDropdown');
+    const rect=wrap.getBoundingClientRect();
+    dd.style.left=rect.left+'px';
+    dd.style.bottom=(window.innerHeight-rect.top+8)+'px';
+    dd.classList.toggle('open');
+  };
   el.appendChild(wrap);
 }
+document.addEventListener('click',()=>closeHueDropdown());
 
 // ── CLEAR ALL ──────────────────────────────────────────────────────────
 function openClearAll(){document.getElementById('clearAllModal').classList.add('open');}
@@ -1340,5 +1373,11 @@ window.addEventListener('resize',()=>{
   if(mp)mp.style.display=window.innerWidth<=768?'flex':'none';
 });
 </script>
+<div class="hue-dropdown" id="hueDropdown">
+  <div style="font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">Custom Colour</div>
+  <input type="range" class="hue-track" id="hueSlider" min="0" max="359" value="210"
+    oninput="setBgHue(parseInt(this.value),65,true);document.getElementById('huePreview').style.background='hsl('+this.value+',65%,65%)'">
+  <div class="hue-preview" id="huePreview" style="background:hsl(210,65%,65%)"></div>
+</div>
 </body>
 </html>
